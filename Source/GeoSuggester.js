@@ -50,14 +50,7 @@ var GeoSuggester = new Class({
   		{
   			var rollHeight = this.options.rollHeight;
   			var show = this.options.show;
-  			var number;
-		    var street;
-		    var city;
-		    var cityCode;
-		    var region;
-		    var countryCode;
-		    var postalCode;
-		    
+  					    
   			var zoomLevel = this.options.zoomLevel;
 			var inputItem = this.options.inputItem;
 			inputItem = $(inputItem);
@@ -73,8 +66,8 @@ var GeoSuggester = new Class({
 			
 			inputItem.addEvent('blur', function()
 		  	{
-		  		mapCanvas.tween('height',0);
-		  		first = true;
+		  		//mapCanvas.tween('height',0);
+		  		//first = true;
 		  	});
 		
 			inputItem.addEvent('focus', function()
@@ -127,11 +120,11 @@ var GeoSuggester = new Class({
 										});
 										
 										google.maps.event.addListener(marker, 'click', function() {
-										inputItem.set('value',suggest);
-										inputItem.focus();
-										inputItem.select();
-																	
-																	
+											inputItem.set('value',suggest);
+											inputItem.focus();
+											inputItem.select();
+											mapCanvas.tween('height',0);
+			  								first = true;														
 										});
 									}
 								}
