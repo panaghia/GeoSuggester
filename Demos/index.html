@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it-it" dir="ltr" >
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Panaghia - Verify city with Google Geocode</title> 
+
+<style>
+
+body
+{
+	background-color:#eee;
+
+}
+
+#container
+{
+	max-width:600px;
+	margin:0 auto;
+}
+
+#map_canvas
+{
+	
+	width:490px;
+	height:0px;	
+	-moz-box-shadow: 3px 3px 5px #999; /* Firefox */
+	-webkit-box-shadow: 3px 3px 5px #999; /* Safari, Chrome */
+	box-shadow: 3px 3px 5px #999; /* CSS3 */
+}
+
+input
+{
+	width:495px;
+	height:40px;
+	font-size:1.2em;
+	
+	
+}
+
+</style>
+
+
+<script type="text/javascript" src="http://panaghia.it/moo/core.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="../Source/GeoSuggester.js"></script>
+
+
+<script type="text/javascript">
+var geo;
+
+window.addEvent('domready', function()
+{
+	geo = new GeoSuggester({
+		inputItem: $('city'),
+		mapCanvas: $('map_canvas'),
+		initText: "Inserisci la via",
+		show: 'postal_code',
+		rollHeight: '200'
+	
+	});
+	
+	
+	
+});
+
+</script>
+
+</head>
+
+<body>
+
+<div id="container">
+	<p>Type an address, then press Enter. Esc to reset</p>
+	<p> example: Via Celoria 20, Milano</p>
+	<input type="text" id="city" value="insert here" />
+	
+		<div id="map_canvas">
+		
+		</div>
+	
+	
+</div>	
+
+
+
+</body>
+</html>
