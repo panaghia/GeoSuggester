@@ -1,0 +1,25 @@
+﻿.GeoSuggesterContainer
+{
+	position:relative;
+	z-index:100 !important;
+	width:595px;
+	
+}
+#map_canvas
+{
+	position:absolute;
+	display:block;
+	width:100%;
+	height:0px;	
+	-moz-box-shadow: 3px 3px 5px #999; /* Firefox */
+	-webkit-box-shadow: 3px 3px 5px #999; /* Safari, Chrome */
+	box-shadow: 3px 3px 5px #999; /* CSS3 */
+}
+
+.GeoSuggesterContainer input[type=text]
+{
+	position:relative;
+	width:100%;
+	margin-bottom:0px;
+	padding:5px;
+}

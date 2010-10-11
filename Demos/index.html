@@ -1,49 +1,112 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it-it" dir="ltr" >
 
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<title>Panaghia - Verify city with Google Geocode</title> 
-
+<title>Panaghia - GeoSuggester</title> 
+<link href='http://fonts.googleapis.com/css?family=Droid+Serif&subset=latin' rel='stylesheet' type='text/css'>
 <style>
 
 body
 {
 	background-color:#eee;
-
+	font-size:120%;
+	font-family: 'Droid Serif', arial, serif;
 }
+
+p
+{
+	margin-bottom:4px;
+	margin-top:4px;
+	font-size:90%;
+	font-style:italic;
+}
+
 
 #container
 {
+	position:relative;
 	max-width:600px;
 	margin:0 auto;
+	z-index:0;
 }
 
-#map_canvas
+
+
+.geoInput
 {
-	
-	width:490px;
-	height:0px;	
-	-moz-box-shadow: 3px 3px 5px #999; /* Firefox */
-	-webkit-box-shadow: 3px 3px 5px #999; /* Safari, Chrome */
-	box-shadow: 3px 3px 5px #999; /* CSS3 */
+	min-width:300px;
+	padding-left:15px;
 }
 
 input
 {
-	width:495px;
-	height:40px;
-	font-size:1.2em;
-	
-	
+	font-size:110%;
+}
+
+label
+{
+	width:auto;
+	color:#555;
+}
+
+#baloonMsg
+{
+	font-size:.9em;
+}
+
+#results
+{
+	position:relative;
+	width:auto;
+	border:1px solid #999;
+	border-radius:5px;
+	padding:15px;
+	max-width:350px;
+	padding-top:35px;
+	z-index:-10;
+}
+
+#results span
+{
+	display:block;
+	z-index:0;
+}
+
+#results h1
+{
+	position:absolute;
+	top:-20px;
+	left:10px;
+	background-color:#eee;
+	font-size:1.3em;
+	color:#888;
+	text-transform:uppercase;
+	z-index:0;
+}
+
+#results span label
+{
+	display:block;
+	z-index:0;
+}
+
+h1
+{
+	color:#333;
+	margin-top:5px;
+	margin-bottom:15px;
 }
 
 </style>
 
 
-<script type="text/javascript" src="http://panaghia.it/moo/core.js"></script>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<link rel="stylesheet" href="../Source/GeoSuggester.css" type="text/css"  />
+<script type="text/javascript" src="moo_core_1.3.js"></script>
 <script type="text/javascript" src="../Source/GeoSuggester.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+
 
 
 <script type="text/javascript">
@@ -52,13 +115,27 @@ var geo;
 window.addEvent('domready', function()
 {
 	geo = new GeoSuggester({
-		inputItem: $('city'),
-		mapCanvas: $('map_canvas'),
-		initText: "Inserisci la via",
-		show: 'postal_code',
-		rollHeight: '200'
-	
+		inputItem: document.id('city'),
+		mapCanvas: document.id('map_canvas'),
+		initText: "Please, provide a street address",
+		rollHeight: '400',
+		//baloonMsg: '<p>html instructions here</p>',
+		onSelect: function()
+		{
+			document.id('postalCode').set('value',geo.getPostalCode());
+			document.id('route').set('value', geo.getRoute());
+			document.id('street_number').set('value', geo.getStreetNumber());
+			document.id('locality').set('value', geo.getLocality());
+			document.id('region').set('value', geo.getAdminArea1());
+		},
+		onClear: function()
+		{
+			$$('.geoInput').set('value','');
+		}
+		
 	});
+	
+	
 	
 	
 	
@@ -71,15 +148,43 @@ window.addEvent('domready', function()
 <body>
 
 <div id="container">
+	
+	<h1>GEOSUGGESTER demostration</h1>
+	
 	<p>Type an address, then press Enter. Esc to reset</p>
 	<p> example: Via Celoria 20, Milano</p>
-	<input type="text" id="city" value="insert here" />
-	
-		<div id="map_canvas">
 		
-		</div>
+	<div class="GeoSuggesterContainer">
+		<input type="text" id="city" value="insert here" />
+		<div id="map_canvas"></div>
+	</div>
 	
-	
+	<br/>
+	<br/>
+	<div id="results">
+		<h1>Results</h1>
+		<span>
+			<label for="postalCode">Postal Code</label>
+			<input class="geoInput" name="postalCode" type="text" id="postalCode" readonly = true />
+		</span>
+		<span>
+			<label for="route">Route</label>
+			<input class="geoInput" name="route" type="text" id="route" readonly = true />
+		</span>
+		<span>
+			<label for="street_number">Street Number</label>
+			<input class="geoInput" name="street_number" type="text" id="street_number" readonly = true />
+		</span>
+		<span>
+		<label for="region">Region</label>
+		<input class="geoInput" name="region" type="text" id="region" readonly = true />
+		</span>
+		<span>
+		<label for="locality">Locality</label>
+		<input class="geoInput" name="locality" type="text" id="locality" readonly = true />
+		</span>
+	</div>
+	<div id="debug"></div>
 </div>	
 
 

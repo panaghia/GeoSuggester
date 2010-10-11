@@ -1,6 +1,6 @@
 name: GeoSuggester
 author: panaghia
-category: Utilities
-tags: [geocoding, autocompleter, input]
-demo: http://panaghia.it/dev/geosuggester
-
+category: Forms
+tags: [geocoding, autocomplete, input, form]
+demo: http://geosuggester.panaghia.it/demo/
+docs: http://geosuggester.panaghia.it/doc/

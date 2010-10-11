@@ -15,10 +15,13 @@ requires:
 - String
 - Array
 
-provides: [GeoSuggester.js]
+- Google Maps API V3
+
+provides: [GeoSuggester.js, GeoSuggester.css]
 
 ...
 */
+
 
 
 var GeoSuggester = new Class({
@@ -36,7 +39,16 @@ var GeoSuggester = new Class({
 	    mapCanvas: null,
 	    rollHeight: '350',
 	    initText: "Insert street",
-	    show: "all"
+	    hideOnBlur : false,
+		baloonMsg: null,
+	    
+	    postalCode: null,
+	    street_number: null,
+	    route: null,
+	    locality: null,
+	    country: null,
+	    admin_area_1: null,
+	    admin_area_2: null
 	    },
 	    initialize: function(options){
 	    	 this.setOptions(options);
@@ -46,15 +58,46 @@ var GeoSuggester = new Class({
   			});
   			this.init();
   		},
+  		getUnsortedResults: function()
+  		{
+  			return this.options.results;
+  		},
+		getPostalCode: function()
+		{
+			return this.options.postalCode;
+		},
+		getStreetNumber: function()
+		{
+			return this.options.street_number;
+		},
+		getRoute: function()
+		{
+			return this.options.route;
+		},
+		getLocality: function()
+		{
+			return this.options.locality;
+		},
+		getCountry: function()
+		{
+			return this.options.country;
+		},
+		getAdminArea1: function()
+		{
+			return this.options.admin_area_1;
+		},
+		getAdminArea2: function()
+		{
+			return this.options.admin_area_2;
+		},
   		init:function ()
   		{
-  			var rollHeight = this.options.rollHeight;
-  			var show = this.options.show;
-  					    
+			var m = this;	
+  			
+  			var rollHeight = this.options.rollHeight;	    
   			var zoomLevel = this.options.zoomLevel;
 			var inputItem = this.options.inputItem;
 			inputItem = $(inputItem);
-			
 			var mapCanvas = this.options.mapCanvas;
 			mapCanvas = $(mapCanvas);
 			
@@ -62,12 +105,17 @@ var GeoSuggester = new Class({
 			var cache = this.options.cache;
 			var first = this.options.first;
 			
+			var hideOnBlur = this.options.hideOnBlur;
+			
 			inputItem.set('value', this.options.initText);
 			
 			inputItem.addEvent('blur', function()
 		  	{
-		  		//mapCanvas.tween('height',0);
-		  		//first = true;
+		  		if(hideOnBlur)
+		  		{
+		  			mapCanvas.tween('height',0);
+		  			first = true;
+		  		}
 		  	});
 		
 			inputItem.addEvent('focus', function()
@@ -78,9 +126,15 @@ var GeoSuggester = new Class({
 			
 			inputItem.addEvent('keydown', function(event)
 			{
+				
 				if(event.key=='esc')
+				{
 					inputItem.set('value','');
-				if(event.key=='enter' || inputItem.get('value').length>6 )
+					mapCanvas.tween('height',0);
+					first = true;
+					m.fireEvent('clear');
+				}
+				if(inputItem.get('value').length>6 )
 				{
 					var address = inputItem.get('value');
 					geocoder = new google.maps.Geocoder();
@@ -91,14 +145,11 @@ var GeoSuggester = new Class({
 							if(status == google.maps.GeocoderStatus.OK)
 							{
 								center = results[0].geometry.location;
-								if(cache.toString()!=center.toString())
+								if(cache.toString()!=center.toString()) //just a bit of cache
 								{
 									var type = results[0].geometry.location_type;
-									if(show=='all')
-										suggest = results[0].formatted_address;
-									else if(show == 'postal_code')
-										suggest = results[0].address_components[6].short_name;
-																	
+									suggest = results[0].formatted_address;
+																		
 									if(type != 'APPROXIMATE')
 									{
 										var myOptions =
@@ -114,18 +165,78 @@ var GeoSuggester = new Class({
 											first = false;
 										}
 										map = new google.maps.Map(mapCanvas, myOptions);
+																				
 										marker = new google.maps.Marker({
 											map: map, 
 											position: results[0].geometry.location
 										});
 										
+										if(m.options.baloonMsg == null)
+											var baloonMsg = '<span id="baloonMsg">Press Enter or click on the marker when<br/>it indicates the right position</span>';
+										else
+											var baloonMsg = m.options.baloonMsg;
+			
+										var baloon = new google.maps.InfoWindow({
+										content: baloonMsg
+										});
+										baloon.open(map, marker);
+										
 										google.maps.event.addListener(marker, 'click', function() {
+										    baloon.close();
+										    //map.setZoom(16);
+										 });
+										 
+										 inputItem.addEvent('keydown', function(e)
+										 {
+											if(e.key == 'enter')
+												extract();
+										 });
+										
+										google.maps.event.addListener(marker, 'click', function(){
+										
+											extract();
+									
+										});
+										
+										function extract()
+										{
+											var k=0;										
+											for(k=0;k<results[0].address_components.length;k++)
+											{
+												var cur = results[0].address_components[k];
+												var curType = cur.types[0];
+												
+												switch(curType)
+												{
+													case 'postal_code': m.options.postalCode = cur.short_name;
+														break;
+													case 'street_number': m.options.street_number = cur.short_name;
+														break;
+													case 'route': m.options.route = cur.short_name;
+														break;
+													case 'locality': m.options.locality = cur.short_name;
+														break;
+													case 'administrative_area_level_1': m.options.admin_area_1 = cur.long_name;
+														break;
+													case 'administrative_area_level_2': m.options.admin_area_2 = cur.long_name;
+														break;
+													case 'country': m.options.country = cur.long_name = cur.long_name;
+														break;
+													default:
+														break;
+												}	
+												
+												
+											}
+																
 											inputItem.set('value',suggest);
 											inputItem.focus();
 											inputItem.select();
 											mapCanvas.tween('height',0);
-			  								first = true;														
-										});
+											first = true;
+											m.fireEvent('select');
+										}
+										
 									}
 								}
 								cache = results[0].geometry.location;
@@ -134,8 +245,9 @@ var GeoSuggester = new Class({
 					} //Endif
 				}
 			}); //end eventlistener
-				
+			
 		}//end fun
+		
 	});
 
 
