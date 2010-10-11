@@ -22,8 +22,6 @@ provides: [GeoSuggester.js, GeoSuggester.css]
 ...
 */
 
-
-
 var GeoSuggester = new Class({
 	Implements: [Options, Events],
     options: {
