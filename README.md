@@ -1,8 +1,11 @@
 GeoSuggester
 ===========
 
-A MooTools class that applies the spirit of Auto Completers to Geocoding
+GeoSuggester is a rapid way of enhance user experience when filling geographic data into forms.
 
+It provides a GMap as a drop-down element: user may auto-complete their address string by pressing 'enter' or clicking on the marker on the map.
+
+See documentation for reference: http://geosuggester.panaghia.it/doc
 
 How to use
 ----------
