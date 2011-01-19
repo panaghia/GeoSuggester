@@ -95,9 +95,9 @@ var GeoSuggester = new Class({
   			var rollHeight = this.options.rollHeight;	    
   			var zoomLevel = this.options.zoomLevel;
 			var inputItem = this.options.inputItem;
-			inputItem = $(inputItem);
+			inputItem = document.id(inputItem);
 			var mapCanvas = this.options.mapCanvas;
-			mapCanvas = $(mapCanvas);
+			mapCanvas = document.id(mapCanvas);
 			
 			var initText = this.options.initText;
 			var cache = this.options.cache;
