@@ -27,6 +27,7 @@ Example usage:
 			document.id('street_number').set('value', geo.getStreetNumber());
 			document.id('locality').set('value', geo.getLocality());
 			document.id('region').set('value', geo.getAdminArea1());
+			document.id('coordinates').set('value', geo.getLatitude()+" "+geo.getLongitude());
 		},
 		onClear: function()
 		{
@@ -39,7 +40,7 @@ Screenshots
 -----------
 
 
-![Screenshot 1](http://panaghia.it/imgs/geo_snap.jpg)
+![Screenshot 1](http://dl.dropbox.com/u/5138746/geosuggester.png)
 
 
 
