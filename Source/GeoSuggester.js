@@ -119,13 +119,18 @@ var GeoSuggester = new Class({
 			{
 				mouseOverMapCanvas = false;
 			});
+			inputItem.addEvent('mouseenter', function()
+			{
+				mouseOverMapCanvas = true;
+			});
+			inputItem.addEvent('mouseleave', function()
+			{
+				mouseOverMapCanvas = false;
+			});
 			document.id(document.body).addEvent('click', function()
 			{
 				if (!mouseOverMapCanvas)
 				{
-					
-					//inputItem.focus();
-					//inputItem.select();
 					mapCanvas.tween('height',0);
 				}
 			});
