@@ -39,7 +39,9 @@ var GeoSuggester = new Class({
 	    initText: "Insert street",
 	    hideOnBlur : false,
 		baloonMsg: null,
+		timer: 0,
 	    
+		results: null,
 	    postalCode: null,
 	    street_number: null,
 	    route: null,
@@ -48,13 +50,15 @@ var GeoSuggester = new Class({
 	    admin_area_1: null,
 	    admin_area_2: null
 	    },
-	    initialize: function(options){
-	    	 this.setOptions(options);
-	    	 
-	    	 this.marker = new google.maps.Marker({
-      			title:"GeoSuggester"
-  			});
-  			this.init();
+	    initialize: function(options)
+		{
+			this.setOptions(options);
+			/*var timeUp = function(){this.options.timer+=1000;}.bind(this);
+			timeUp.periodical(1000);*/
+			this.marker = new google.maps.Marker({
+				title:"GeoSuggester"
+			});
+			this.init();
   		},
   		getUnsortedResults: function()
   		{
@@ -90,8 +94,7 @@ var GeoSuggester = new Class({
 		},
   		init:function ()
   		{
-			var m = this;	
-  			
+			  			
   			var rollHeight = this.options.rollHeight;	    
   			var zoomLevel = this.options.zoomLevel;
 			var inputItem = this.options.inputItem;
@@ -130,9 +133,14 @@ var GeoSuggester = new Class({
 					inputItem.set('value','');
 					mapCanvas.tween('height',0);
 					first = true;
-					m.fireEvent('clear');
+					this.fireEvent('clear');
 				}
-				if(inputItem.get('value').length>6 )
+				else if(event.key == 'enter')
+				{
+					//alert(this.options.timer);
+					this.extract(this.options.results);
+				}
+				else if(inputItem.get('value').length>6 )
 				{
 					var address = inputItem.get('value');
 					geocoder = new google.maps.Geocoder();
@@ -145,6 +153,7 @@ var GeoSuggester = new Class({
 								center = results[0].geometry.location;
 								if(cache.toString()!=center.toString()) //just a bit of cache
 								{
+									this.options.results = results;
 									var type = results[0].geometry.location_type;
 									suggest = results[0].formatted_address;
 																		
@@ -169,10 +178,10 @@ var GeoSuggester = new Class({
 											position: results[0].geometry.location
 										});
 										
-										if(m.options.baloonMsg == null)
+										if(this.options.baloonMsg == null)
 											var baloonMsg = '<span id="baloonMsg">Press Enter or click on the marker when<br/>it indicates the right position</span>';
 										else
-											var baloonMsg = m.options.baloonMsg;
+											var baloonMsg = this.options.baloonMsg;
 			
 										var baloon = new google.maps.InfoWindow({
 										content: baloonMsg
@@ -183,69 +192,64 @@ var GeoSuggester = new Class({
 										    baloon.close();
 										    //map.setZoom(16);
 										 });
-										 
-										 inputItem.addEvent('keydown', function(e)
-										 {
-											if(e.key == 'enter')
-												extract();
-										 });
-										
+									
 										google.maps.event.addListener(marker, 'click', function(){
 										
-											extract();
+											this.extract(results);
 									
-										});
+										}.bind(this));
 										
-										function extract()
-										{
-											var k=0;										
-											for(k=0;k<results[0].address_components.length;k++)
-											{
-												var cur = results[0].address_components[k];
-												var curType = cur.types[0];
-												
-												switch(curType)
-												{
-													case 'postal_code': m.options.postalCode = cur.short_name;
-														break;
-													case 'street_number': m.options.street_number = cur.short_name;
-														break;
-													case 'route': m.options.route = cur.short_name;
-														break;
-													case 'locality': m.options.locality = cur.short_name;
-														break;
-													case 'administrative_area_level_1': m.options.admin_area_1 = cur.long_name;
-														break;
-													case 'administrative_area_level_2': m.options.admin_area_2 = cur.long_name;
-														break;
-													case 'country': m.options.country = cur.long_name = cur.long_name;
-														break;
-													default:
-														break;
-												}	
-												
-												
-											}
-																
-											inputItem.set('value',suggest);
-											inputItem.focus();
-											inputItem.select();
-											mapCanvas.tween('height',0);
-											first = true;
-											m.fireEvent('select');
-										}
-										
+																				
 									}
 								}
 								cache = results[0].geometry.location;
 							}
-						}); //end geocode
+						}.bind(this)); //end geocode
 					} //Endif
 				}
-			}); //end eventlistener
+			}.bind(this)); //end eventlistener
 			
-		}//end fun
-		
+		},//end fun
+		extract:function(results)
+		{
+			var inputItem = document.id(this.options.inputItem);
+			var mapCanvas = document.id(this.options.mapCanvas);
+			var k=0;										
+			for(k=0;k<results[0].address_components.length;k++)
+			{
+				var cur = results[0].address_components[k];
+				var curType = cur.types[0];
+				
+				switch(curType)
+				{
+					case 'postal_code': this.options.postalCode = cur.short_name;
+						break;
+					case 'street_number': this.options.street_number = cur.short_name;
+						break;
+					case 'route': this.options.route = cur.short_name;
+						break;
+					case 'locality': this.options.locality = cur.short_name;
+						break;
+					case 'administrative_area_level_1': this.options.admin_area_1 = cur.long_name;
+						break;
+					case 'administrative_area_level_2': this.options.admin_area_2 = cur.long_name;
+						break;
+					case 'country': this.options.country = cur.long_name = cur.long_name;
+						break;
+					default:
+						break;
+				}	
+				
+				
+			}
+								
+			inputItem.set('value',suggest);
+			inputItem.focus();
+			inputItem.select();
+			mapCanvas.tween('height',0);
+			first = true;
+			this.fireEvent('select');
+		}
 	});
 
 
