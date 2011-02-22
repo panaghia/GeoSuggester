@@ -30,7 +30,6 @@ var GeoSuggester = new Class({
     	center: null,
     	map: null,
 	    cache : '',
-	    first : true,
 	    marker : null,
 	    inputItem: null,
 	    zoomLevel: 12,
@@ -39,7 +38,7 @@ var GeoSuggester = new Class({
 	    initText: "Insert street",
 	    hideOnBlur : false,
 		baloonMsg: null,
-		timer: 0,
+		delay: 600,
 	    
 		results: null,
 	    postalCode: null,
@@ -53,8 +52,7 @@ var GeoSuggester = new Class({
 	    initialize: function(options)
 		{
 			this.setOptions(options);
-			/*var timeUp = function(){this.options.timer+=1000;}.bind(this);
-			timeUp.periodical(1000);*/
+			
 			this.marker = new google.maps.Marker({
 				title:"GeoSuggester"
 			});
@@ -102,9 +100,29 @@ var GeoSuggester = new Class({
 			var mapCanvas = this.options.mapCanvas;
 			mapCanvas = document.id(mapCanvas);
 			
+			var mouseOverMapCanvas = false;
+			mapCanvas.addEvent('mouseenter', function()
+			{
+				mouseOverMapCanvas = true;
+			});
+			mapCanvas.addEvent('mouseleave', function()
+			{
+				mouseOverMapCanvas = false;
+			});
+			document.id(document.body).addEvent('click', function()
+			{
+				if (!mouseOverMapCanvas)
+				{
+					
+					//inputItem.focus();
+					//inputItem.select();
+					mapCanvas.tween('height',0);
+				}
+			});
+			
 			var initText = this.options.initText;
 			var cache = this.options.cache;
-			var first = this.options.first;
+		
 			
 			var hideOnBlur = this.options.hideOnBlur;
 			
@@ -115,7 +133,7 @@ var GeoSuggester = new Class({
 		  		if(hideOnBlur)
 		  		{
 		  			mapCanvas.tween('height',0);
-		  			first = true;
+		  			
 		  		}
 		  	});
 		
@@ -132,80 +150,81 @@ var GeoSuggester = new Class({
 				{
 					inputItem.set('value','');
 					mapCanvas.tween('height',0);
-					first = true;
 					this.fireEvent('clear');
 				}
-				else if(event.key == 'enter')
+				else if(event.key == 'enter' || event.key == 'tab')
 				{
-					//alert(this.options.timer);
 					this.extract(this.options.results);
 				}
-				else if(inputItem.get('value').length>6 )
+				else if(inputItem.get('value').length>5 )
 				{
-					var address = inputItem.get('value');
-					geocoder = new google.maps.Geocoder();
-					if(geocoder)
+					this.options.timer = 0; //reset timer
+					(function()
 					{
-						geocoder.geocode( {'address':address}, function(results, status)
+						var address = inputItem.get('value');
+						geocoder = new google.maps.Geocoder();
+						if(geocoder)
 						{
-							if(status == google.maps.GeocoderStatus.OK)
+							geocoder.geocode( {'address':address}, function(results, status)
 							{
-								center = results[0].geometry.location;
-								if(cache.toString()!=center.toString()) //just a bit of cache
+								if(status == google.maps.GeocoderStatus.OK)
 								{
-									this.options.results = results;
-									var type = results[0].geometry.location_type;
-									suggest = results[0].formatted_address;
-																		
-									if(type != 'APPROXIMATE')
+									center = results[0].geometry.location;
+									if(cache.toString()!=center.toString()) //just a bit of cache
 									{
-										var myOptions =
+										this.options.results = results;
+										var type = results[0].geometry.location_type;
+										suggest = results[0].formatted_address;
+																		
+										if(type != 'APPROXIMATE')
 										{
-									      zoom: zoomLevel,
-									      center: center,
-									      mapTypeId: google.maps.MapTypeId.ROADMAP
-										}
+											var myOptions =
+											{
+										      zoom: zoomLevel,
+										      center: center,
+										      mapTypeId: google.maps.MapTypeId.ROADMAP
+											}
 										
-										if(first)
-										{
-											mapCanvas.tween('height',rollHeight);
-											first = false;
-										}
-										map = new google.maps.Map(mapCanvas, myOptions);
+											if(mapCanvas.getSize().y != rollHeight)
+											{
+												mapCanvas.tween('height',rollHeight);
+											}
+											map = new google.maps.Map(mapCanvas, myOptions);
 																				
-										marker = new google.maps.Marker({
-											map: map, 
-											position: results[0].geometry.location
-										});
+											marker = new google.maps.Marker({
+												map: map, 
+												position: results[0].geometry.location
+											});
 										
-										if(this.options.baloonMsg == null)
-											var baloonMsg = '<span id="baloonMsg">Press Enter or click on the marker when<br/>it indicates the right position</span>';
-										else
-											var baloonMsg = this.options.baloonMsg;
+											if(this.options.baloonMsg == null)
+												var baloonMsg = '<span id="baloonMsg">Press Enter or click on the marker when<br/>it indicates the right position</span>';
+											else
+												var baloonMsg = this.options.baloonMsg;
 			
-										var baloon = new google.maps.InfoWindow({
-										content: baloonMsg
-										});
-										baloon.open(map, marker);
+											var baloon = new google.maps.InfoWindow({
+											content: baloonMsg
+											});
+											baloon.open(map, marker);
 										
-										google.maps.event.addListener(marker, 'click', function() {
-										    baloon.close();
-										    //map.setZoom(16);
-										 });
+											google.maps.event.addListener(marker, 'click', function() {
+											    baloon.close();
+											    //map.setZoom(16);
+											 });
 									
-										google.maps.event.addListener(marker, 'click', function(){
+											google.maps.event.addListener(marker, 'click', function(){
 										
-											this.extract(results);
+												this.extract(results);
 									
-										}.bind(this));
+											}.bind(this));
 										
 																				
+										}
 									}
+									cache = results[0].geometry.location;
 								}
-								cache = results[0].geometry.location;
-							}
-						}.bind(this)); //end geocode
-					} //Endif
+							}.bind(this)); //end geocode
+						} //Endif
+					}.bind(this)).delay(this.options.delay);
 				}
 			}.bind(this)); //end eventlistener
 			
@@ -247,7 +266,6 @@ var GeoSuggester = new Class({
 			inputItem.focus();
 			inputItem.select();
 			mapCanvas.tween('height',0);
-			first = true;
 			this.fireEvent('select');
 		}
 	});
