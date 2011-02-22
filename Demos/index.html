@@ -127,6 +127,7 @@ window.addEvent('domready', function()
 			document.id('street_number').set('value', geo.getStreetNumber());
 			document.id('locality').set('value', geo.getLocality());
 			document.id('region').set('value', geo.getAdminArea1());
+			document.id('coord').set('value', geo.getLatitude()+" "+geo.getLongitude());
 		},
 		onClear: function()
 		{
@@ -182,6 +183,10 @@ window.addEvent('domready', function()
 		<span>
 		<label for="locality">Locality</label>
 		<input class="geoInput" name="locality" type="text" id="locality" readonly = true />
+		</span>
+		<span>
+			<label for="coord">Coordinates</label>
+			<input class="geoInput" name="coord" type="text" id="coord" readonly = true />
 		</span>
 	</div>
 	<div id="debug"></div>

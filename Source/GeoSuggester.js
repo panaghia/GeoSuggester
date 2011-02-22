@@ -47,7 +47,9 @@ var GeoSuggester = new Class({
 	    locality: null,
 	    country: null,
 	    admin_area_1: null,
-	    admin_area_2: null
+	    admin_area_2: null,
+		latitude: null,
+		longitude: null
 	    },
 	    initialize: function(options)
 		{
@@ -89,6 +91,14 @@ var GeoSuggester = new Class({
 		getAdminArea2: function()
 		{
 			return this.options.admin_area_2;
+		},
+		getLatitude: function()
+		{
+			return this.options.latitude;
+		},
+		getLongitude: function()
+		{
+			return this.options.longitude;
 		},
   		init:function ()
   		{
@@ -233,7 +243,11 @@ var GeoSuggester = new Class({
 		{
 			var inputItem = document.id(this.options.inputItem);
 			var mapCanvas = document.id(this.options.mapCanvas);
-			var k=0;										
+			var k=0;
+		
+			this.options.latitude = results[0].geometry.location.lat();
+			this.options.longitude = results[0].geometry.location.lng();
+			
 			for(k=0;k<results[0].address_components.length;k++)
 			{
 				var cur = results[0].address_components[k];
