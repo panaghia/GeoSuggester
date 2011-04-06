@@ -34,6 +34,7 @@ var GeoSuggester = new Class({
 	    inputItem: null,
 	    zoomLevel: 12,
 	    mapCanvas: null,
+		container:null,
 	    rollHeight: '350',
 	    initText: "Insert street",
 	    hideOnBlur : false,
@@ -102,13 +103,27 @@ var GeoSuggester = new Class({
 		},
   		init:function ()
   		{
+			var inputItem = document.id(this.options.inputItem);		   
+			var mapCanvas = new Element('div',
+			{
+				id: this.options.mapCanvas,
+				styles:
+				{
+					'position':'absolute',
+					'top': (inputItem.getSize().y+2)+'px',
+					'width': inputItem.getSize().x+'px'				
+				}
+				
+			}).inject(document.id(this.options.container)); 
+			this.options.mapCanvas = mapCanvas;
+		  			
 			  			
   			var rollHeight = this.options.rollHeight;	    
   			var zoomLevel = this.options.zoomLevel;
 			var inputItem = this.options.inputItem;
-			inputItem = document.id(inputItem);
-			var mapCanvas = this.options.mapCanvas;
-			mapCanvas = document.id(mapCanvas);
+			
+			//var mapCanvas = this.options.mapCanvas;
+			//mapCanvas = document.id(mapCanvas);
 			
 			var mouseOverMapCanvas = false;
 			mapCanvas.addEvent('mouseenter', function()

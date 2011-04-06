@@ -29,8 +29,20 @@ p
 	max-width:600px;
 	margin:0 auto;
 	z-index:0;
-}
+}  
 
+#GeoSuggesterContainer
+{
+	position:relative;
+}
+    
+#GeoSuggesterContainer input[type=text]
+{
+	position:relative;
+	width:550px;
+	margin-bottom:0px;
+	padding:5px;
+}
 
 
 .geoInput
@@ -101,7 +113,7 @@ h1
 </style>
 
 
-<link rel="stylesheet" href="../Source/GeoSuggester.css" type="text/css"  />
+
 <script type="text/javascript" src="moo_core_1.3.js"></script>
 <script type="text/javascript" src="../Source/GeoSuggester.js"></script>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -116,7 +128,7 @@ window.addEvent('domready', function()
 {
 	geo = new GeoSuggester({
 		inputItem: document.id('city'),
-		mapCanvas: document.id('map_canvas'),
+		container: 'GeoSuggesterContainer',
 		initText: "Please, provide a street address",
 		rollHeight: '400',
 		//baloonMsg: '<p>html instructions here</p>',
@@ -155,9 +167,8 @@ window.addEvent('domready', function()
 	<p>Type an address, then press Enter. Esc to reset</p>
 	<p> example: Via Celoria 20, Milano</p>
 		
-	<div class="GeoSuggesterContainer">
+	<div id="GeoSuggesterContainer">
 		<input type="text" id="city" value="insert here" />
-		<div id="map_canvas"></div>
 	</div>
 	
 	<br/>
