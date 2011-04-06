@@ -23,33 +23,7 @@ p
 }
 
 
-#container
-{
-	position:relative;
-	max-width:600px;
-	margin:0 auto;
-	z-index:0;
-}  
 
-#GeoSuggesterContainer
-{
-	position:relative;
-}
-    
-#GeoSuggesterContainer input[type=text]
-{
-	position:relative;
-	width:550px;
-	margin-bottom:0px;
-	padding:5px;
-}
-
-
-.geoInput
-{
-	min-width:300px;
-	padding-left:15px;
-}
 
 input
 {
@@ -111,7 +85,46 @@ h1
 }
 
 </style>
+   
 
+
+<style>
+#container
+{
+	position:relative;
+	max-width:600px;
+	margin:0 auto;
+	z-index:0;
+}  
+
+#GeoSuggesterContainer
+{
+	position:relative;
+}
+    
+#GeoSuggesterContainer input[type=text]
+{
+	position:relative;
+	width:550px;
+	margin-bottom:0px;
+	padding:5px;
+}
+
+._map_canvas
+{
+	
+	box-shadow:1px 1px 2px rgba(100, 100, 100, .5);
+	-webkit-box-shadow:1px 1px 2px rgba(100, 100, 100, .5); 
+	-moz-box-shadow:1px 1px 2px rgba(100, 100, 100, .5); 
+}
+
+.geoInput
+{
+	min-width:300px;
+	padding-left:15px;
+}
+
+</style>
 
 
 <script type="text/javascript" src="moo_core_1.3.js"></script>
@@ -131,7 +144,7 @@ window.addEvent('domready', function()
 		container: 'GeoSuggesterContainer',
 		initText: "Please, provide a street address",
 		rollHeight: '400',
-		//baloonMsg: '<p>html instructions here</p>',
+		baloonMsg: 'Right location?<br/>press enter!',
 		onSelect: function()
 		{
 			document.id('postalCode').set('value',geo.getPostalCode());

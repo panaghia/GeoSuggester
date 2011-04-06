@@ -34,12 +34,14 @@ var GeoSuggester = new Class({
 	    inputItem: null,
 	    zoomLevel: 12,
 	    mapCanvas: null,
+		customClass: '_map_canvas',
 		container:null,
 	    rollHeight: '350',
 	    initText: "Insert street",
 	    hideOnBlur : false,
 		baloonMsg: null,
 		delay: 600,
+		
 	    
 		results: null,
 	    postalCode: null,
@@ -106,12 +108,12 @@ var GeoSuggester = new Class({
 			var inputItem = document.id(this.options.inputItem);		   
 			var mapCanvas = new Element('div',
 			{
-				id: this.options.mapCanvas,
+				'class': this.options.customClass,
 				styles:
 				{
 					'position':'absolute',
 					'top': (inputItem.getSize().y+2)+'px',
-					'width': inputItem.getSize().x+'px'				
+					'width': inputItem.getSize().x+'px'			
 				}
 				
 			}).inject(document.id(this.options.container)); 
