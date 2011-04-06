@@ -145,6 +145,7 @@ window.addEvent('domready', function()
 		initText: "Please, provide a street address",
 		rollHeight: '400',
 		baloonMsg: 'Right location?<br/>press enter!',
+		customClass: '_map_canvas',
 		onSelect: function()
 		{
 			document.id('postalCode').set('value',geo.getPostalCode());
