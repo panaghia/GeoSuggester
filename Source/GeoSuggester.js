@@ -233,9 +233,10 @@ var GeoSuggester = new Class({
 												var baloonMsg = '<span id="baloonMsg">Press Enter or click on the marker when<br/>it indicates the right position</span>';
 											else
 												var baloonMsg = this.options.baloonMsg;
-			                                
+			                               
 											if(!document.id('_map_hud'))
-											{
+											{ 
+											   
 												var mapCanvasHUD = new Element('div',
 												{
 													'id':'_map_hud',
@@ -257,8 +258,11 @@ var GeoSuggester = new Class({
 													},
 													html:baloonMsg
 
-												}).inject(mapCanvas); 
-											}
+												}).inject(mapCanvas);
+												mapCanvasHUD.highlight('#808080');
+												//console.log('inject'); 
+											} 
+											
 										
 										  									
 											google.maps.event.addListener(marker, 'click', function(){								
