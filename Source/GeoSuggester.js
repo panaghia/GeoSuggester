@@ -233,12 +233,7 @@ var GeoSuggester = new Class({
 												var baloonMsg = '<span id="baloonMsg">Press Enter or click on the marker when<br/>it indicates the right position</span>';
 											else
 												var baloonMsg = this.options.baloonMsg;
-			
-											/*var baloon = new google.maps.InfoWindow({
-											content: baloonMsg
-											});
-											baloon.open(map, marker);
-											                              */
+			                                
 											if(!document.id('_map_hud'))
 											{
 												var mapCanvasHUD = new Element('div',
@@ -265,11 +260,7 @@ var GeoSuggester = new Class({
 												}).inject(mapCanvas); 
 											}
 										
-										  /*  google.maps.event.addListener(marker, 'click', function() {
-											    baloon.close();
-											    //map.setZoom(16);
-											 }); */
-									
+										  									
 											google.maps.event.addListener(marker, 'click', function(){								
 												this.extract(results); 							
 											}.bind(this));
@@ -280,7 +271,7 @@ var GeoSuggester = new Class({
 									cache = results[0].geometry.location;
 								}
 								
-							}.bind(this)).delay(1000);
+							}.bind(this)).delay(100);
 								
 							}.bind(this));//end geocode
 						} //Endif 
@@ -301,12 +292,16 @@ var GeoSuggester = new Class({
 			
 			for(k=0;k<results[0].address_components.length;k++)
 			{
+				
 				var cur = results[0].address_components[k];
-				var curType = cur.types[0];
+				var curType = cur.types[0]; 
+				//console.log(curType+": "+cur.short_name+"-"+cur.long_name); 
 				
 				switch(curType)
 				{
 					case 'postal_code': this.options.postalCode = cur.short_name;
+						break; 
+					case 'postal_code_prefix': this.options.postalCode = cur.short_name //some places do not return postal_code, use postal_code_prefix instead, even if not documented in google api V3
 						break;
 					case 'street_number': this.options.street_number = cur.short_name;
 						break;
@@ -322,11 +317,8 @@ var GeoSuggester = new Class({
 						break;
 					default:
 						break;
-				}	
-				
-				
-			}
-								
+				}					
+			}   							
 			inputItem.set('value',suggest);
 			inputItem.focus();
 			inputItem.select();
