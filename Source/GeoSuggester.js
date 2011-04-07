@@ -105,7 +105,34 @@ var GeoSuggester = new Class({
 		},
   		init:function ()
   		{
-			var inputItem = document.id(this.options.inputItem);		   
+			var initText = this.options.initText;
+			var cache = this.options.cache;
+			var hideOnBlur = this.options.hideOnBlur;  
+			
+			var inputItem = document.id(this.options.inputItem);
+			inputItem.addEvent('mouseenter', function()
+			{
+				mouseOverMapCanvas = true;				
+			});
+			inputItem.addEvent('mouseleave', function()
+			{
+				mouseOverMapCanvas = false;				
+			});
+			inputItem.set('value', this.options.initText);
+			inputItem.addEvent('blur', function()
+		  	{
+		  		if(hideOnBlur)
+		  		{
+		  			mapCanvas.tween('height',0);
+		  		}
+		  	});
+
+			inputItem.addEvent('focus', function()
+			{
+				if(inputItem.get('value')==initText)
+					inputItem.set('value','');
+			}); 
+			
 			var mapCanvas = new Element('div',
 			{
 				'class': this.options.customClass,
@@ -117,15 +144,14 @@ var GeoSuggester = new Class({
 				}
 				
 			}).inject(document.id(this.options.container)); 
-			this.options.mapCanvas = mapCanvas;
+			this.options.mapCanvas = mapCanvas;            
+			
+			
 		  			
 			  			
   			var rollHeight = this.options.rollHeight;	    
   			var zoomLevel = this.options.zoomLevel;
-			var inputItem = this.options.inputItem;
 			
-			//var mapCanvas = this.options.mapCanvas;
-			//mapCanvas = document.id(mapCanvas);
 			
 			var mouseOverMapCanvas = false;
 			mapCanvas.addEvent('mouseenter', function()
@@ -136,14 +162,8 @@ var GeoSuggester = new Class({
 			{
 				mouseOverMapCanvas = false;
 			});
-			inputItem.addEvent('mouseenter', function()
-			{
-				mouseOverMapCanvas = true;
-			});
-			inputItem.addEvent('mouseleave', function()
-			{
-				mouseOverMapCanvas = false;
-			});
+			
+			
 			document.id(document.body).addEvent('click', function()
 			{
 				if (!mouseOverMapCanvas)
@@ -151,38 +171,15 @@ var GeoSuggester = new Class({
 					mapCanvas.tween('height',0);
 				}
 			});
-			
-			var initText = this.options.initText;
-			var cache = this.options.cache;
-		
-			
-			var hideOnBlur = this.options.hideOnBlur;
-			
-			inputItem.set('value', this.options.initText);
-			
-			inputItem.addEvent('blur', function()
-		  	{
-		  		if(hideOnBlur)
-		  		{
-		  			mapCanvas.tween('height',0);
-		  			
-		  		}
-		  	});
-		
-			inputItem.addEvent('focus', function()
-			{
-				if(inputItem.get('value')==initText)
-					inputItem.set('value','');
-			});
-			
+   		
 			inputItem.addEvent('keydown', function(event)
 			{
 				
 				if(event.key=='esc')
 				{
-					inputItem.set('value','');
-					mapCanvas.tween('height',0);
 					this.fireEvent('clear');
+					inputItem.set('value','');
+					mapCanvas.tween('height',0);   				
 				}
 				else if(event.key == 'enter' || event.key == 'tab')
 				{
@@ -197,8 +194,11 @@ var GeoSuggester = new Class({
 						geocoder = new google.maps.Geocoder();
 						if(geocoder)
 						{
+							
 							geocoder.geocode( {'address':address}, function(results, status)
-							{
+							{ 
+								//console.log('out');
+							    (function(){
 								if(status == google.maps.GeocoderStatus.OK)
 								{
 									center = results[0].geometry.location;
@@ -219,7 +219,8 @@ var GeoSuggester = new Class({
 										
 											if(mapCanvas.getSize().y != rollHeight)
 											{
-												mapCanvas.tween('height',rollHeight);
+												mapCanvas.setStyle('height',rollHeight+'px'); 
+												
 											}
 											map = new google.maps.Map(mapCanvas, myOptions);
 																				
@@ -233,20 +234,44 @@ var GeoSuggester = new Class({
 											else
 												var baloonMsg = this.options.baloonMsg;
 			
-											var baloon = new google.maps.InfoWindow({
+											/*var baloon = new google.maps.InfoWindow({
 											content: baloonMsg
 											});
 											baloon.open(map, marker);
+											                              */
+											if(!document.id('_map_hud'))
+											{
+												var mapCanvasHUD = new Element('div',
+												{
+													'id':'_map_hud',
+													styles:
+													{
+														'position':'absolute',
+														'top':'20px',
+														'left':'80px',
+														'width':'auto',
+														'backgroundColor':'#333',
+														'color':'#fff',
+														'z-index':'999',
+														'border-radius':'15px',
+														'padding-left':'8px',
+														'padding-right':'8px',
+														'padding-top':'4px',
+														'padding-bottom':'4px',
+														'font-size':'.8em'
+													},
+													html:baloonMsg
+
+												}).inject(mapCanvas); 
+											}
 										
-											google.maps.event.addListener(marker, 'click', function() {
+										  /*  google.maps.event.addListener(marker, 'click', function() {
 											    baloon.close();
 											    //map.setZoom(16);
-											 });
+											 }); */
 									
-											google.maps.event.addListener(marker, 'click', function(){
-										
-												this.extract(results);
-									
+											google.maps.event.addListener(marker, 'click', function(){								
+												this.extract(results); 							
 											}.bind(this));
 										
 																				
@@ -254,8 +279,12 @@ var GeoSuggester = new Class({
 									}
 									cache = results[0].geometry.location;
 								}
-							}.bind(this)); //end geocode
-						} //Endif
+								
+							}.bind(this)).delay(1000);
+								
+							}.bind(this));//end geocode
+						} //Endif 
+					
 					}.bind(this)).delay(this.options.delay);
 				}
 			}.bind(this)); //end eventlistener

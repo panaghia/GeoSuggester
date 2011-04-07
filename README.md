@@ -19,7 +19,8 @@ Example usage:
 		mapCanvas: document.id('map_canvas'),
 		initText: "Please, provide a street address",
 		rollHeight: '400',
-		//baloonMsg: '<p>html instructions here</p>',
+	   	baloonMsg: 'Right location?<br/>press enter!',
+		customClass: '_map_canvas',
 		onSelect: function()
 		{
 			document.id('postalCode').set('value',geo.getPostalCode());
