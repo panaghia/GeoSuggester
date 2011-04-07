@@ -139,6 +139,7 @@ var GeoSuggester = new Class({
 				styles:
 				{
 					'position':'absolute',
+					'left': '0px',
 					'top': (inputItem.getSize().y+2)+'px',
 					'width': inputItem.getSize().x+'px'			
 				}
