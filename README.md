@@ -47,7 +47,7 @@ Screenshots
 -----------
 
 ![Screenshot 1](http://dl.dropbox.com/u/5138746/geosuggester.png)
-![Screenshot 2](http://dl.dropbox.com/u/5138746/geosuggester_snapshot_real.png)
+![Screenshot 2](http://dl.dropbox.com/u/5138746/geo_2.png)
 
 Resources
 -----------------
