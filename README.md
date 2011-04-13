@@ -21,7 +21,7 @@ var geo = new GeoSuggester({
 		mapCanvas: 'GeoSuggesterContainer',
 		initText: "Please, provide a street address",
 		rollHeight: '400',
-	   	baloonMsg: '<p>Right location?</p><p>press enter!</p>',
+	   	baloonMsg: 'Right location?press enter!',
 		customClass: '_map_canvas',
 		delay:1000,
 		onSelect: function()
