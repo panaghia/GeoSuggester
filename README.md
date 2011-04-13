@@ -14,9 +14,7 @@ Just declare an instance of GeoSuggester class in your code
 
 Example usage:
 
-<div id="GeoSuggesterContainer">
-	<input type="text" id="city" value="insert here" />
-</div>
+
 
 var geo = new GeoSuggester({
 		inputItem: 'city',
