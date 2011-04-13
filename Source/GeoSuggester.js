@@ -11,13 +11,13 @@ requires:
 - Element.Event
 - Fx.Tween
 - Element.Style
-- Element.Dimenstions
+- Element.Dimensions
 - String
 - Array
 
 - Google Maps API V3
 
-provides: [GeoSuggester.js, GeoSuggester.css]
+provides: GeoSuggester.js
 
 ...
 */

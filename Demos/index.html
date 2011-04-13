@@ -100,6 +100,7 @@ h1
 #GeoSuggesterContainer
 {
 	position:relative;
+	margin-top:10px;
 }
     
 #GeoSuggesterContainer input[type=text]
@@ -122,6 +123,11 @@ h1
 {
 	min-width:300px;
 	padding-left:15px;
+}         
+
+.example
+{
+	background-color:#FFF7B8;
 }
 
 </style>
@@ -178,10 +184,10 @@ window.addEvent('domready', function()
 
 <div id="container">
 	
-	<h1>GEOSUGGESTER demostration</h1>
+	<h1><a href="http://geosuggester.panaghia.it" title="GeoSuggester home page">GEOSUGGESTER</a> demostration</h1>
 	
 	<p>Type an address, then press Enter. Esc to reset</p>
-	<p> example: Via Celoria 20, Milano</p>
+	<p> example: <span class="example">Via Celoria 20, Milano </span>or<br/><span class="example"> 1600 Amphitheatre Parkway, Mountain View.</span></p>
 		
 	<div id="GeoSuggesterContainer">
 		<input type="text" id="city" value="insert here" />
