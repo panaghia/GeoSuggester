@@ -17,7 +17,7 @@ Put your input element inside a container with position style expressely declare
 		<input type="text" id="city" value="insert here" />
 	</div>
 
-Declare an instance of GeoSuggester class in your code 
+Then declare an instance of GeoSuggester class in your code 
 
 	var geo = new GeoSuggester({
 		inputItem: 'city',
