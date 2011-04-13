@@ -3,46 +3,49 @@ GeoSuggester
 
 GeoSuggester is a rapid way of enhance user experience when filling geographic data into forms.
 
-It provides a GMap as a drop-down element: user may auto-complete their address string by pressing 'enter' or clicking on the marker on the map.
+It provides a Google Map canvas as a drop-down element: user may auto-complete their address string by pressing 'enter' or clicking on the marker on the map.
 
 See documentation for reference: http://geosuggester.panaghia.it/doc
+
 
 How to use
 ----------
 
-Just declare an instance of GeoSuggester class in your code and pass id of the input element(needs to be put inside a container element).
+Declare an instance of GeoSuggester class in your code
 
-Example usage:
-
-	geo = new GeoSuggester({
+	var geo = new GeoSuggester({
 		inputItem: 'city',
 		container: 'GeoSuggesterContainer',
 		initText: "Please, provide a street address",
-		rollHeight: '400',
-	   	baloonMsg: 'Right location?<br/>press enter!',
+		rollHeight: 400,
+		baloonMsg: 'Right location?<br/>Press enter!',
 		customClass: '_map_canvas',
-		delay:1000,
+		delay: 1000,
 		onSelect: function()
-		{   		document.id('postalCode').set('value',geo.getPostalCode());
-			document.id('route').set('value', geo.getRoute());
-			document.id('street_number').set('value', geo.getStreetNumber());
-			document.id('locality').set('value', geo.getLocality());
-			document.id('region').set('value', geo.getAdminArea1());
-			document.id('coordinates').set('value', geo.getLatitude()+" "+geo.getLongitude());
+		{
+			//fires when user select a location
+			document.id('postalCode').set('value', geo.getPostalCode());
+			//see documentation for function reference
 		},
 		onClear: function()
 		{
-			$$('.geoInput').set('value','');
-		}
-		
+			document.id('city').set('value', '');
+			//fires when users press esc (in input context)		
+		}		
 	});
+
+
+
 
 Screenshots
 -----------
 
-
 ![Screenshot 1](http://dl.dropbox.com/u/5138746/geosuggester.png)
 ![Screenshot 2](http://dl.dropbox.com/u/5138746/geosuggester_snapshot_real.png)
 
+Resources
+-----------------
 
+Check GeoSuggester Wiki on GitHub
+and official minisite (http://geosuggester.panaghia.it).
 
