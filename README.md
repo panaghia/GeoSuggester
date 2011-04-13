@@ -11,11 +11,13 @@ See documentation for reference: http://geosuggester.panaghia.it/doc
 How to use
 ----------
 
-Declare an instance of GeoSuggester class in your code
+Put your input element inside a container with position style expressely declared (fixed, relative or absolute).
 
-	<div id="GeoSuggesterContainer">
+	<div id="GeoSuggesterContainer" style="position:relative">
 		<input type="text" id="city" value="insert here" />
-	</div> 
+	</div>
+
+Declare an instance of GeoSuggester class in your code 
 
 	var geo = new GeoSuggester({
 		inputItem: 'city',
