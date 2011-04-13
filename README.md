@@ -14,31 +14,30 @@ Just declare an instance of GeoSuggester class in your code
 
 Example usage:
 
-
-
-var geo = new GeoSuggester({
-		inputItem: 'city',
-		mapCanvas: 'GeoSuggesterContainer',
-		initText: "Please, provide a street address",
-		rollHeight: '400',
-	   	baloonMsg: 'Right location?press enter!',
-		customClass: '_map_canvas',
-		delay:1000,
-		onSelect: function()
-		{
-			document.id('postalCode').set('value',geo.getPostalCode());
-			document.id('route').set('value', geo.getRoute());
-			document.id('street_number').set('value', geo.getStreetNumber());
-			document.id('locality').set('value', geo.getLocality());
-			document.id('region').set('value', geo.getAdminArea1());
-			document.id('coordinates').set('value', geo.getLatitude()+" "+geo.getLongitude());
-		},
-		onClear: function()
-		{
-			$$('.geoInput').set('value','');
-		}
-		
-	});
+geo = new GeoSuggester({
+	inputItem: 'city',
+	container: 'GeoSuggesterContainer',
+	initText: "Please, provide a street address",
+	rollHeight: '400',
+	baloonMsg: '<p>Right location?</p><p>press enter!</p>',
+	customClass: '_map_canvas',
+	delay:1000,
+	onSelect: function()
+	{
+		document.id('postalCode').set('value',geo.getPostalCode());
+		document.id('route').set('value', geo.getRoute());
+		document.id('street_number').set('value', geo.getStreetNumber());
+		document.id('locality').set('value', geo.getLocality());
+		document.id('region').set('value', geo.getAdminArea1());
+		document.id('coord').set('value', geo.getLatitude()+" "+geo.getLongitude());
+	},
+	onClear: function()
+	{
+		document.id('city').set('value',''); 
+		$$('.geoInput').set('value', '');
+	}
+	
+});
 
 Screenshots
 -----------
