@@ -14,13 +14,18 @@ Just declare an instance of GeoSuggester class in your code
 
 Example usage:
 
-	geo = new GeoSuggester({
-		inputItem: document.id('city'),
-		mapCanvas: document.id('map_canvas'),
+<div id="GeoSuggesterContainer">
+	<input type="text" id="city" value="insert here" />
+</div>
+
+var geo = new GeoSuggester({
+		inputItem: 'city',
+		mapCanvas: 'GeoSuggesterContainer',
 		initText: "Please, provide a street address",
 		rollHeight: '400',
-	   	baloonMsg: 'Right location?<br/>press enter!',
+	   	baloonMsg: '<p>Right location?</p><p>press enter!</p>',
 		customClass: '_map_canvas',
+		delay:1000,
 		onSelect: function()
 		{
 			document.id('postalCode').set('value',geo.getPostalCode());
