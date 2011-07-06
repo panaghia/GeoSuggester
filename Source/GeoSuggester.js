@@ -185,9 +185,9 @@ var GeoSuggester = new Class({
             }
             else if(value.length >= this.options.minLength )
             {
-               this.getMap((this.options.country) ? value+', '+this.options.country : value);;
+               this.getMap((this.options.country) ? value+', '+this.options.country : value);
             }
-             }.bind(this) ).delay(this.options.delay)
+             }.bind(this) ).delay(this.options.delay);
         }.bind(this)); //end eventlistener
 			
     },
