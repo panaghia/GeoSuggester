@@ -46,7 +46,8 @@ var GeoSuggester = new Class({
 		hideOnClickOut: true,
 		baloonMsg: null,
 		delay: 600,
-		minLength:5 ,
+		minLength:5 , 
+		preferRegion: null,
 		
 	    
 		results: null,
@@ -202,10 +203,14 @@ var GeoSuggester = new Class({
 						geocoder = new google.maps.Geocoder();
 						if(geocoder)
 						{
-							
-							geocoder.geocode( {'address':address}, function(results, status)
-							{ 
-								//console.log('out');
+							var preferRegion = this.options.preferRegion;
+							geocoder.geocode(
+							{
+								'address':address,
+								'region': preferRegion
+							},
+							function(results, status)
+							{
 							    (function(){
 								if(status == google.maps.GeocoderStatus.OK)
 								{

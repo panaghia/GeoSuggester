@@ -152,7 +152,8 @@ window.addEvent('domready', function()
 		rollHeight: '400',
 		baloonMsg: '<p>Right location?</p><p>press enter!</p>',
 		customClass: '_map_canvas',
-		delay:1000,
+		delay:1000, 
+	    //preferRegion: 'IT',
 		onSelect: function()
 		{
 			document.id('postalCode').set('value',geo.getPostalCode());
