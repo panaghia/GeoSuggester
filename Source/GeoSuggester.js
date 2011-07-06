@@ -49,8 +49,7 @@ var GeoSuggester = new Class({
 		delay: 600,
 		minLength:5 , 
 		preferRegion: null,
-
-		
+		hideOnSelect: true,	
 	    
         results: null,
         postalCode: null,
