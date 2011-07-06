@@ -39,6 +39,7 @@ var GeoSuggester = new Class({
         customClass: '_map_canvas',
         container:null,
         rollHeight: '350',
+        region:null,
         hideOnBlur : false,
         hideOnSelect:true,
         hideOnClickOut: true,
@@ -194,7 +195,8 @@ var GeoSuggester = new Class({
             if(geocoder)
             {
                 geocoder.geocode( {
-                    'address':address
+                    'address':address,
+                    'region':this.options.region
                 }, function(results, status)
                 { 
                     //console.log('out');
@@ -340,18 +342,9 @@ var GeoSuggester = new Class({
                 }					
             }   							
             inputItem.set('value',suggest);
-            inputItem.focus();
-            inputItem.select();
             if (this.options.hideOnSelect)
                 mapCanvas.tween('height',0);
             this.fireEvent('select');
         }
     }
 });
-
-
-
-
-
-		
-    	
