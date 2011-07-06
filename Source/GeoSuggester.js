@@ -295,6 +295,15 @@ var GeoSuggester = new Class({
 			this.options.latitude = results[0].geometry.location.lat();
 			this.options.longitude = results[0].geometry.location.lng();
 			
+			this.options.postalCode = null;
+			this.options.street_number = null;
+			this.options.route = null;
+			this.options.locality = null;
+			this.options.admin_area_1 = null;
+			this.options.postalCodePrefix = null;
+			this.options.admin_area_2 = null;
+			this.options.country = null;
+			
 			for(k=0;k<results[0].address_components.length;k++)
 			{
 				
