@@ -40,6 +40,7 @@ var GeoSuggester = new Class({
 		container:null,
 	    rollHeight: '350',
 	    hideOnBlur : false,
+		hideOnClickOut: true,
 		baloonMsg: null,
 		delay: 600,
 		minLength:5 ,
@@ -170,11 +171,11 @@ var GeoSuggester = new Class({
 			
 			document.id(document.body).addEvent('click', function()
 			{
-				if (!mouseOverMapCanvas)
+				if (!mouseOverMapCanvas && this.options.hideOnClickOut)
 				{
 					mapCanvas.tween('height',0);
 				}
-			});
+			}.bind(this));
    		
 			inputItem.addEvent('keydown', function(event)
 			{
@@ -189,7 +190,7 @@ var GeoSuggester = new Class({
 				{
 					this.extract();
 				}
-				else if(inputItem.get('value').length > this.options.minLength )
+				else if(inputItem.get('value').length >= this.options.minLength )
 				{
 					this.options.timer = 0; //reset timer
 					(function()
