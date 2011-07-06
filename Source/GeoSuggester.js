@@ -196,7 +196,7 @@ var GeoSuggester = new Class({
 					this.options.timer = 0; //reset timer
 					(function()
 					{
-						var address = inputItem.get('value');
+						var address = (this.options.country) ? inputItem.get('value')+', '+this.options.country : inputItem.get('value');
 						geocoder = new google.maps.Geocoder();
 						if(geocoder)
 						{
