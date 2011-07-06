@@ -182,7 +182,7 @@ var GeoSuggester = new Class({
             }
             else if(inputItem.get('value').length >= this.options.minLength )
             {
-                this.getMap((this.options.country) ? inputItem.get('value')+', '+this.options.country : inputItem.get('value'));
+                this.getMap(inputItem.get('value'));
             }
         }.bind(this)); //end eventlistener
 			
