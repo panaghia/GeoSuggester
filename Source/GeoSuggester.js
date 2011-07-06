@@ -31,16 +31,18 @@ var GeoSuggester = new Class({
     	map: null,
 	    cache : '',
 	    marker : null,
+		allowApproximate: false,
+		keyValidation: true,
 	    inputItem: null,
 	    zoomLevel: 12,
 	    mapCanvas: null,
 		customClass: '_map_canvas',
 		container:null,
 	    rollHeight: '350',
-	    initText: "Insert street",
 	    hideOnBlur : false,
 		baloonMsg: null,
 		delay: 600,
+		minLength:5 ,
 		
 	    
 		results: null,
@@ -58,7 +60,7 @@ var GeoSuggester = new Class({
 	    initialize: function(options)
 		{
 			this.setOptions(options);
-			
+			this.accepted=false;
 			this.marker = new google.maps.Marker({
 				title:"GeoSuggester"
 			});
@@ -110,7 +112,7 @@ var GeoSuggester = new Class({
 		},
   		init:function ()
   		{
-			var initText = this.options.initText;
+
 			var cache = this.options.cache;
 			var hideOnBlur = this.options.hideOnBlur;  
 			
@@ -123,7 +125,7 @@ var GeoSuggester = new Class({
 			{
 				mouseOverMapCanvas = false;				
 			});
-			inputItem.set('value', this.options.initText);
+
 			inputItem.addEvent('blur', function()
 		  	{
 		  		if(hideOnBlur)
@@ -132,11 +134,7 @@ var GeoSuggester = new Class({
 		  		}
 		  	});
 
-			inputItem.addEvent('focus', function()
-			{
-				if(inputItem.get('value')==initText)
-					inputItem.set('value','');
-			}); 
+
 			
 			var mapCanvas = new Element('div',
 			{
@@ -180,18 +178,18 @@ var GeoSuggester = new Class({
    		
 			inputItem.addEvent('keydown', function(event)
 			{
-				
+				this.accepted=false;
 				if(event.key=='esc')
 				{
 					this.fireEvent('clear');
 					inputItem.set('value','');
 					mapCanvas.tween('height',0);   				
 				}
-				else if(event.key == 'enter' || event.key == 'tab')
+				else if(this.options.keyValidation && ( event.key == 'enter' || event.key == 'tab' ) )
 				{
-					this.extract(this.options.results);
+					this.extract();
 				}
-				else if(inputItem.get('value').length>5 )
+				else if(inputItem.get('value').length > this.options.minLength )
 				{
 					this.options.timer = 0; //reset timer
 					(function()
@@ -214,7 +212,7 @@ var GeoSuggester = new Class({
 										var type = results[0].geometry.location_type;
 										suggest = results[0].formatted_address;
 																		
-										if(type != 'APPROXIMATE')
+										if(this.options.allowApproximate || (!this.options.allowApproximate &&  type != 'APPROXIMATE'))
 										{
 											var myOptions =
 											{
@@ -272,7 +270,7 @@ var GeoSuggester = new Class({
 										
 										  									
 											google.maps.event.addListener(marker, 'click', function(){								
-												this.extract(results); 							
+												this.extract(); 							
 											}.bind(this));
 										
 																				
@@ -291,60 +289,67 @@ var GeoSuggester = new Class({
 			}.bind(this)); //end eventlistener
 			
 		},//end fun
-		extract:function(results)
+		extract:function()
 		{
-			var inputItem = document.id(this.options.inputItem);
-			var mapCanvas = document.id(this.options.mapCanvas);
-			var k=0;
-		
-			this.options.latitude = results[0].geometry.location.lat();
-			this.options.longitude = results[0].geometry.location.lng();
-			
-			this.options.postalCode = null;
-			this.options.street_number = null;
-			this.options.route = null;
-			this.options.locality = null;
-			this.options.admin_area_1 = null;
-			this.options.postalCodePrefix = null;
-			this.options.admin_area_2 = null;
-			this.options.country = null;
-			
-			for(k=0;k<results[0].address_components.length;k++)
+			var results = this.options.results
+			if (results)
 			{
+				this.accepted=true;
 				
-				var cur = results[0].address_components[k];
-				var curType = cur.types[0]; 
-				//console.log(curType+": "+cur.short_name+"-"+cur.long_name); 
+			
+				var inputItem = document.id(this.options.inputItem);
+				var mapCanvas = document.id(this.options.mapCanvas);
+				var k=0;
+			
+				this.options.latitude = results[0].geometry.location.lat();
+				this.options.longitude = results[0].geometry.location.lng();
 				
-				switch(curType)
+				this.options.postalCode = null;
+				this.options.street_number = null;
+				this.options.route = null;
+				this.options.locality = null;
+				this.options.admin_area_1 = null;
+				this.options.postalCodePrefix = null;
+				this.options.admin_area_2 = null;
+				this.options.country = null;
+				
+				for(k=0;k<results[0].address_components.length;k++)
 				{
-					case 'postal_code': this.options.postalCode = cur.short_name;
-						break; 
-					case 'postal_code_prefix': this.options.postalCode = cur.short_name //some places do not return postal_code, use postal_code_prefix instead, even if not documented in google api V3
-						break;
-					case 'street_number': this.options.street_number = cur.short_name;
-						break;
-					case 'route': this.options.route = cur.short_name;
-						break;
-					case 'locality': this.options.locality = cur.short_name;
-						break;
-					case 'administrative_area_level_1': this.options.admin_area_1 = cur.long_name;
-						break;
-					case 'administrative_area_level_2': 
-						this.options.admin_area_2 = cur.long_name;
-						this.options.postalCodePrefix = cur.short_name;
-						break;
-					case 'country': this.options.country = cur.long_name = cur.long_name;
-						break;
-					default:
-						break;
-				}					
-			}   							
-			inputItem.set('value',suggest);
-			inputItem.focus();
-			inputItem.select();
-			mapCanvas.tween('height',0);
-			this.fireEvent('select');
+					
+					var cur = results[0].address_components[k];
+					var curType = cur.types[0]; 
+					//console.log(curType+": "+cur.short_name+"-"+cur.long_name); 
+					
+					switch(curType)
+					{
+						case 'postal_code': this.options.postalCode = cur.short_name;
+							break; 
+						case 'postal_code_prefix': this.options.postalCode = cur.short_name //some places do not return postal_code, use postal_code_prefix instead, even if not documented in google api V3
+							break;
+						case 'street_number': this.options.street_number = cur.short_name;
+							break;
+						case 'route': this.options.route = cur.short_name;
+							break;
+						case 'locality': this.options.locality = cur.short_name;
+							break;
+						case 'administrative_area_level_1': this.options.admin_area_1 = cur.long_name;
+							break;
+						case 'administrative_area_level_2': 
+							this.options.admin_area_2 = cur.long_name;
+							this.options.postalCodePrefix = cur.short_name;
+							break;
+						case 'country': this.options.country = cur.long_name = cur.long_name;
+							break;
+						default:
+							break;
+					}					
+				}   							
+				inputItem.set('value',suggest);
+				inputItem.focus();
+				inputItem.select();
+				mapCanvas.tween('height',0);
+				this.fireEvent('select');
+			}
 		}
 	});
 
