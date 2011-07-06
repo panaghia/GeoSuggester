@@ -5,7 +5,10 @@ description: GeoSuggester
 license: MIT-style
 
 authors:
-- Sergio Panagia (http://panaghia.it)
+- Sergio Panagia (http://panaghia.it)  
+
+contributors:
+- Nicolas Badey (Nico-B)
 
 requires:
 - Element.Event
