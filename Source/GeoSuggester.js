@@ -45,6 +45,7 @@ var GeoSuggester = new Class({
 	    
 		results: null,
 	    postalCode: null,
+		postalCodePrefix:null,
 	    street_number: null,
 	    route: null,
 	    locality: null,
@@ -70,6 +71,10 @@ var GeoSuggester = new Class({
 		getPostalCode: function()
 		{
 			return this.options.postalCode;
+		},
+		getPostalCodePrefix: function()
+		{
+			return this.options.postalCodePrefix;
 		},
 		getStreetNumber: function()
 		{
@@ -325,7 +330,9 @@ var GeoSuggester = new Class({
 						break;
 					case 'administrative_area_level_1': this.options.admin_area_1 = cur.long_name;
 						break;
-					case 'administrative_area_level_2': this.options.admin_area_2 = cur.long_name;
+					case 'administrative_area_level_2': 
+						this.options.admin_area_2 = cur.long_name;
+						this.options.postalCodePrefix = cur.short_name;
 						break;
 					case 'country': this.options.country = cur.long_name = cur.long_name;
 						break;
