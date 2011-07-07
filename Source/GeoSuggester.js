@@ -39,7 +39,7 @@ var GeoSuggester = new Class({
         customClass: '_map_canvas',
         container:null,
         rollHeight: '350',
-        region:null,
+        preferRegion: null,
         hideOnBlur : false,
         hideOnSelect:true,
         hideOnClickOut: true,
@@ -199,7 +199,7 @@ var GeoSuggester = new Class({
             {
                 geocoder.geocode( {
                     'address':address,
-                    'region':this.options.region
+                    'region':this.options.preferRegion
                 }, function(results, status)
                 { 
                     console.log('adress: '+address);
