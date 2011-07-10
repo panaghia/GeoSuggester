@@ -5,10 +5,7 @@ description: GeoSuggester
 license: MIT-style
 
 authors:
-- Sergio Panagia (http://panaghia.it)  
-
-contributors:
-- Nicolas Badey (Nico-B)
+- Sergio Panagia (http://panaghia.it)
 
 requires:
 - Element.Event
@@ -28,28 +25,28 @@ provides: GeoSuggester.js
 var GeoSuggester = new Class({
     Implements: [Options, Events],
     options: {
-
-       	suggest: "",
-    	geocoder: null,
-    	center: null,
-    	map: null,
-	    cache : '',
-	    marker : null,
-		allowApproximate: false,
-		keyValidation: true,
-	    inputItem: null,
-	    zoomLevel: 12,
-	    mapCanvas: null,
-		customClass: '_map_canvas',
-		container:null,
-	    rollHeight: '350',
-	    hideOnBlur : false,
-		hideOnClickOut: true,
-		baloonMsg: null,
-		delay: 600,
-		minLength:5 , 
-		preferRegion: null,
-		hideOnSelect: true,	
+        suggest: "",
+        geocoder: null,
+        center: null,
+        map: null,
+        cache : '',
+        marker : null,
+        allowApproximate: false,
+        keyValidation: true,
+        inputItem: null,
+        zoomLevel: 12,
+        mapCanvas: null,
+        customClass: '_map_canvas',
+        container:null,
+        rollHeight: '350',
+        preferRegion: null,
+        hideOnBlur : false,
+        hideOnSelect:true,
+        hideOnClickOut: true,
+        baloonMsg: '<span id="baloonMsg">Press Enter or click on the marker when<br/>it indicates the right position</span>',
+        delay: 600,
+        minLength:5 ,
+		
 	    
         results: null,
         postalCode: null,
@@ -172,6 +169,9 @@ var GeoSuggester = new Class({
    		
         inputItem.addEvent('keydown', function(event)
         {
+           (function() { 
+            var value = $(this.options.inputItem).get('value');
+            
             this.accepted=false;
             if(event.key=='esc')
             {
@@ -183,17 +183,17 @@ var GeoSuggester = new Class({
             {
                 this.extract();
             }
-            else if(inputItem.get('value').length >= this.options.minLength )
+            else if(value.length >= this.options.minLength )
             {
-                this.getMap(inputItem.get('value'));
+               this.getMap((this.options.country) ? value+', '+this.options.country : value);
             }
+             }.bind(this) ).delay(this.options.delay);
         }.bind(this)); //end eventlistener
 			
     },
     getMap:function(address){
         this.options.timer = 0; //reset timer
-        (function()
-        {
+
             geocoder = new google.maps.Geocoder();
             if(geocoder)
             {
@@ -201,7 +201,8 @@ var GeoSuggester = new Class({
                     'address':address,
                     'region':this.options.preferRegion
                 }, function(results, status)
-                {
+                { 
+                    console.log('adress: '+address);
                     (function(){
                         if(status == google.maps.GeocoderStatus.OK)
                         {
@@ -211,7 +212,7 @@ var GeoSuggester = new Class({
                                 this.options.results = results;
                                 var type = results[0].geometry.location_type;
                                 suggest = results[0].formatted_address;
- 					
+																		
                                 if(this.options.allowApproximate || (!this.options.allowApproximate &&  type != 'APPROXIMATE'))
                                 {
                                     var myOptions =
@@ -279,7 +280,7 @@ var GeoSuggester = new Class({
                 }.bind(this));//end geocode
             } //Endif 
 					
-        }.bind(this)).delay(this.options.delay);
+      
     },
     extract:function()
     {
