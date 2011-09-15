@@ -7,6 +7,8 @@ license: MIT-style
 authors:
 - Sergio Panagia (http://panaghia.it)
 
+contributors:
+- Nicolas Badey (Nico-B)
 requires:
 - Element.Event
 - Fx.Tween
@@ -46,6 +48,7 @@ var GeoSuggester = new Class({
         baloonMsg: '<span id="baloonMsg">Press Enter or click on the marker when<br/>it indicates the right position</span>',
         delay: 600,
         minLength:5 ,
+		map: true,
 		
 	    
         results: null,
@@ -202,7 +205,7 @@ var GeoSuggester = new Class({
                     'region':this.options.preferRegion
                 }, function(results, status)
                 { 
-                    console.log('adress: '+address);
+                    //console.log('adress: '+address);
                     (function(){
                         if(status == google.maps.GeocoderStatus.OK)
                         {
@@ -213,7 +216,7 @@ var GeoSuggester = new Class({
                                 var type = results[0].geometry.location_type;
                                 suggest = results[0].formatted_address;
 																		
-                                if(this.options.allowApproximate || (!this.options.allowApproximate &&  type != 'APPROXIMATE'))
+                                if(this.options.map && (this.options.allowApproximate || (!this.options.allowApproximate &&  type != 'APPROXIMATE')))
                                 {
                                     var myOptions =
                                     {
